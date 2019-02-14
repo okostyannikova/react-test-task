@@ -1,40 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import UserCard from "./UserCard";
 import Error from "./Error";
 import Loader from "./Loader";
-import { graphql } from "react-apollo";
+import { Query } from "react-apollo";
 import gql from "graphql-tag";
 
-class App extends Component {
-  render() {
-    const { error, loading, search: users } = this.props.data;
-
-    if (error) return <Error />;
-    return (
-      <Wrapper>
-        <Header>Top 10 popular Github Users by Odessa</Header>
-
-        {loading ? (
-          <Loader />
-        ) : (
-          <UserList>
-            {users.edges.length &&
-              users.edges.map(({ node: user }) => (
-                <UserListItem key={user.id}>
-                  <UserCard user={user} />
-                </UserListItem>
-              ))}
-          </UserList>
-        )}
-      </Wrapper>
-    );
-  }
-}
-
-const repoQuery = gql`
-  query($name: String!) {
-    search(query: $name, first: 10, type: USER) {
+const usersQuery = gql`
+  query {
+    search(query: "location:odessa", first: 10, type: USER) {
       edges {
         node {
           ... on User {
@@ -53,15 +27,31 @@ const repoQuery = gql`
   }
 `;
 
-const AppWithData = graphql(repoQuery, {
-  options: {
-    variables: {
-      name: "location:odessa"
-    }
-  }
-})(App);
+const App = () => (
+  <Query query={usersQuery}>
+    {({ loading, error, data }) => {
+      if (error) return <Error />;
 
-export default AppWithData;
+      return (
+        <Wrapper>
+          <Header>Top 10 popular Github Users by Odessa</Header>
+
+          {loading || !data ? (
+            <Loader />
+          ) : (
+            <UserList>
+              {data.search.edges.map(({ node: user }) => (
+                <UserListItem key={user.id}>
+                  <UserCard user={user} />
+                </UserListItem>
+              ))}
+            </UserList>
+          )}
+        </Wrapper>
+      );
+    }}
+  </Query>
+);
 
 const Wrapper = styled.div`
   max-width: 800px;
@@ -81,3 +71,5 @@ const UserListItem = styled.li`
   padding: 0;
   border-top: 1px solid #e1e4e8;
 `;
+
+export default App;
