@@ -44,15 +44,21 @@ export const fetchUsers = () => dispatch => {
   axios(apiUrl + "/search/users", {
     params: {
       q: "location:odessa",
-      sort: "stars",
       page: 1,
       per_page: 10
     }
   })
     .then(res => {
+      return Promise.all(
+        res.data.items.map(user =>
+          axios(`${apiUrl}/users/${user.login}`).then(res => res.data)
+        )
+      );
+    })
+    .then(users => {
       dispatch({
         type: USERS_SUCCESS,
-        payload: { users: res.data.items }
+        payload: { users }
       });
     })
     .catch(err => dispatch({ type: USERS_ERROR }));

@@ -1,0 +1,15 @@
+body {
+  color: #24292e;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #0366d6;
+  text-decoration: none;
+}
