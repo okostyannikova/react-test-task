@@ -6,10 +6,10 @@ const UserCard = ({ user }) => {
     <Wrapper>
       <Content>
         <Avatar>
-          <AvatarImg src={user.avatar_url} />
+          <AvatarImg src={user.avatarUrl} />
         </Avatar>
         <UserInfo>
-          <UserLogin href={user.html_url} target="_blank">
+          <UserLogin href={user.url} target="_blank">
             {user.login}
           </UserLogin>
           <UserName>{user.name}</UserName>

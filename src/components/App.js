@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
-import { fetchUsers } from "../ducks/users";
 import UserCard from "./UserCard";
 import Error from "./Error";
 import Loader from "./Loader";
+import { graphql } from "react-apollo";
+import gql from "graphql-tag";
 
 class App extends Component {
-  componentDidMount = () => {
-    const { fetchUsers } = this.props;
-    fetchUsers();
-  };
-
   render() {
-    const { users, loading, error } = this.props;
+    const { error, loading, search: users } = this.props.data;
 
     if (error) return <Error />;
     return (
@@ -24,8 +19,8 @@ class App extends Component {
           <Loader />
         ) : (
           <UserList>
-            {users.length &&
-              users.map(user => (
+            {users.edges.length &&
+              users.edges.map(({ node: user }) => (
                 <UserListItem key={user.id}>
                   <UserCard user={user} />
                 </UserListItem>
@@ -37,14 +32,36 @@ class App extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    users: state.users.usersList,
-    loading: state.users.loading,
-    error: state.users.error
-  }),
-  { fetchUsers }
-)(App);
+const repoQuery = gql`
+  query($name: String!) {
+    search(query: $name, first: 10, type: USER) {
+      edges {
+        node {
+          ... on User {
+            id
+            name
+            login
+            email
+            location
+            avatarUrl
+            bio
+            url
+          }
+        }
+      }
+    }
+  }
+`;
+
+const AppWithData = graphql(repoQuery, {
+  options: {
+    variables: {
+      name: "location:odessa"
+    }
+  }
+})(App);
+
+export default AppWithData;
 
 const Wrapper = styled.div`
   max-width: 800px;

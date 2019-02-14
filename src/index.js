@@ -1,13 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App";
+import AppWithData from "./components/App";
 import "./index.css";
-import { Provider } from "react-redux";
-import store from "./redux/store";
+import { ApolloProvider } from "react-apollo";
+import ApolloClient from "apollo-boost";
+
+const token = "1f10c6a17b6d7107b17984820c692187dc0c1ce6";
+
+const client = new ApolloClient({
+  uri: "https://api.github.com/graphql",
+  headers: {
+    authorization: `Bearer ${token}`
+  }
+});
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <ApolloProvider client={client}>
+    <AppWithData />
+  </ApolloProvider>,
   document.getElementById("root")
 );
