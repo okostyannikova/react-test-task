@@ -49,8 +49,9 @@ export const fetchUsers = () => dispatch => {
     }
   })
     .then(res => {
+      const users = res.data.items;
       return Promise.all(
-        res.data.items.map(user =>
+        users.map(user =>
           axios(`${apiUrl}/users/${user.login}`).then(res => res.data)
         )
       );

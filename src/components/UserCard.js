@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const UserCart = ({ user }) => {
+const UserCard = ({ user }) => {
   return (
     <Wrapper>
       <Content>
@@ -117,4 +117,4 @@ const UserMetaItem = styled.li`
   }
 `;
 
-export default UserCart;
+export default UserCard;

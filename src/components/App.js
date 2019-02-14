@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { fetchUsers } from "../ducks/users";
-import UserCart from "./UserCart";
+import UserCard from "./UserCard";
 import Error from "./Error";
 import Loader from "./Loader";
 
@@ -27,7 +27,7 @@ class App extends Component {
             {users.length &&
               users.map(user => (
                 <UserListItem key={user.id}>
-                  <UserCart user={user} />
+                  <UserCard user={user} />
                 </UserListItem>
               ))}
           </UserList>
